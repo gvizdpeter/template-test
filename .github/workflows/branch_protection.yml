@@ -32,4 +32,4 @@ jobs:
           route: PUT /repos/{repository}/branches/{branch}/protection
           repository: ${{ github.repository }}
           branch: master
-          body: ${{ ${{ toJSON(env.REQUEST_BODY) }}
+          body: ${{ toJSON(env.REQUEST_BODY) }}
