@@ -12,7 +12,11 @@ jobs:
       - uses: octokit/request-action@v2.1.7
         env:
           GITHUB_TOKEN: ${{ secrets.INIT_TOKEN }}
-          REQUEST_BODY: |
+        with:
+          route: PUT /repos/{repository}/branches/{branch}/protection
+          repository: ${{ github.repository }}
+          branch: master
+          body: |
             {
               "required_status_checks": "strict",
               "required_pull_request_reviews": {
@@ -28,8 +32,4 @@ jobs:
               "lock_branch": true,
               "enforce_admins": false
             }
-        with:
-          route: PUT /repos/{repository}/branches/{branch}/protection
-          repository: ${{ github.repository }}
-          branch: master
-          body: ${{ toJSON(env.REQUEST_BODY) }}
+            
