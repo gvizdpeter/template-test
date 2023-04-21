@@ -1,0 +1,36 @@
+---
+name: Helm CI Checks
+on:
+  pull_request: {}
+jobs:
+  helm-ci-checks:
+    runs-on: sentinel-general-use-runner
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.11.1
+
+      - name: Setup kubeconform
+        shell: bash
+        run: |
+          KUBECONFORM=0.6.1
+          echo "Downloading kubeconform ${KUBECONFORM}"
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM}/kubeconform-linux-amd64.tar.gz | tar xz
+
+      - name: Lint Helm Chart
+        run: |
+          helm dependency update charts/s1-mongodb/
+          helm lint charts/s1-mongodb/
+
+      - name: Validate manifests using Kubeconform
+        shell: bash
+        run: |
+          helm dependency update charts/s1-mongodb/
+          helm template charts/s1-mongodb/ | ./kubeconform -ignore-missing-schemas -verbose
