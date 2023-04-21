@@ -1,5 +1,5 @@
 apiVersion: v2
-name: s1-mongodb
+name: test
 description: An Umbrella Helm chart for S1 DBApps MongoDB Kubernetes Deployments
 maintainers:
   - email: sre_shared_services_dbapps@sentinelone.com
