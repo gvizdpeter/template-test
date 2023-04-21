@@ -4,7 +4,7 @@ on:
   pull_request: {}
 jobs:
   helm-ci-checks:
-    runs-on: sentinel-general-use-runner
+    runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
@@ -26,11 +26,11 @@ jobs:
 
       - name: Lint Helm Chart
         run: |
-          helm dependency update charts/s1-mongodb/
-          helm lint charts/s1-mongodb/
+          helm dependency update charts/test/
+          helm lint charts/test/
 
       - name: Validate manifests using Kubeconform
         shell: bash
         run: |
-          helm dependency update charts/s1-mongodb/
-          helm template charts/s1-mongodb/ | ./kubeconform -ignore-missing-schemas -verbose
+          helm dependency update charts/test/
+          helm template charts/test/ | ./kubeconform -ignore-missing-schemas -verbose
