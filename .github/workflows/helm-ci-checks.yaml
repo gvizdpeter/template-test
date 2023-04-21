@@ -2,6 +2,9 @@
 name: Helm CI Checks
 on:
   pull_request: {}
+  workflow_run:
+    workflows: ["Release Please"]
+    types: [completed]
 jobs:
   helm-ci-checks:
     runs-on: ubuntu-latest
