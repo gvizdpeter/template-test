@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/gvizdpetertest/template-test/compare/v1.0.1...v1.0.2) (2023-04-24)
+
+
+### Bug Fixes
+
+* fixed helm workflows vol3 ([3752697](https://github.com/gvizdpetertest/template-test/commit/375269790ef507d1b4207409a8c5cc09f4963949))
+
 ## [1.0.1](https://github.com/gvizdpetertest/template-test/compare/v1.0.0...v1.0.1) (2023-04-21)
 
 
