@@ -15,13 +15,10 @@ jobs:
     - uses: actions/github-script@v6
       with:
         script: |
-          const commentParams = "${{ github.event.comment.body }}".split(' ');
+          const commentParams = "${{ github.event.comment.body }}".substring(1).replace(" ", ":");
           github.rest.issues.addLabels({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            labels: [
-              "cluster:" + commentParams[1],
-              "valuesPath:" + commentParams[2]
-            ]
+            labels: [commentParams]
           });
