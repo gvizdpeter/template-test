@@ -58,6 +58,7 @@ jobs:
             repo: context.repo.repo
           });
           const labels = await github.paginate(opts)
+          console.log(labels)
           const setLabels = []
           for (const label of labels) {
             if (!label.name.startsWith("deploy:" + commentParams[1])) {
