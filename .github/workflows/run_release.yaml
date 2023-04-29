@@ -1,20 +1,14 @@
 name: Run release
 
 on:
-  workflow_run:
-    workflows: ["Add deploy labels"]
-    types: [completed]
-
   pull_request:
     types: [edited, synchronize]
 
 jobs:
   run-release:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
     - uses: actions/checkout@v3
     - name: Run release
       run: |
-        echo "${{ github.event.workflow_run.event }}"
+        echo "${{ toJSON(github.event.pull_request.labels) }}"
