@@ -6,21 +6,23 @@ on:
 
 jobs:
   add-deploy-labels:
-#    if: ${{ github.event.issue.pull_request }} && contains(github.event.comment.html_url, '/deploy')
-    if: ${{ github.event.issue.pull_request }}
+    if: ${{ github.event.issue.pull_request }} && startsWith(github.event.comment.body, '/deploy')
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
     - uses: actions/checkout@v3
-    - name: Dump GitHub context
-      run: echo '${{ toJSON(github.event.comment) }}'
-    # - uses: actions/github-script@v6
-    #   with:
-    #     script: |
-    #       github.rest.issues.addLabels({
-    #         issue_number: context.issue.number,
-    #         owner: context.repo.owner,
-    #         repo: context.repo.repo,
-    #         labels: ["test"]
-    #       })
+    - name: Parse comment
+      run: |
+        IFS=' ' read -r -a COMMENT_ARGS <<< "${{ github.event.comment.body }}"
+        echo "${COMMENT_ARGS[0]}"
+        echo "${COMMENT_ARGS[1]}"
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.addLabels({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: ["test"]
+          })
