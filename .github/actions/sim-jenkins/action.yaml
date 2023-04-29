@@ -12,11 +12,12 @@ runs:
   steps:
     - run: |
         IFS=':' read -r -a labelParams <<< "${{ inputs.deploy-label }}"
-        echo "result={\"action\": \"$labelParams[0]\", \"cluster\": \"$labelParams[1]\"}" >> "$GITHUB_OUTPUT"
+        echo "action=$labelParams[0]" >> "$GITHUB_OUTPUT"
+        echo "cluster=$labelParams[1]" >> "$GITHUB_OUTPUT"
       shell: bash
       id: parse-deploy-params
     - run: |
-        echo "Running ${{ steps.parse-deploy-params.outputs.result.action }} on ${{ steps.parse-deploy-params.outputs.result.cluster }}"
+        echo "Running ${{ steps.parse-deploy-params.outputs.action }} on ${{ steps.parse-deploy-params.outputs.cluster }}"
       shell: bash
     - uses: actions/github-script@v6
       with:
@@ -25,5 +26,5 @@ runs:
             issue_number: ${{ inputs.pr-id }},
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: "Successfull ${{ steps.parse-deploy-params.outputs.result.action }} on ${{ steps.parse-deploy-params.outputs.result.cluster }}"
+            body: "Successfull ${{ steps.parse-deploy-params.outputs.action }} on ${{ steps.parse-deploy-params.outputs.cluster }}"
           })
