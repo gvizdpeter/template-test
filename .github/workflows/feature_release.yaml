@@ -28,15 +28,6 @@ jobs:
           });
           return commentParams;
 
-  run-release:
-    needs: add-deploy-labels
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Run release
-      run: |
-        echo "${{ needs.add-deploy-labels.outputs.commentParams }}"
-
   remove-deploy-labels:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/delete')
     runs-on: ubuntu-latest
@@ -72,11 +63,17 @@ jobs:
           });
           return commentParams;
 
-  delete-release:
-    needs: remove-deploy-labels
+  run-jenkins:
+    permissions:
+      pull-requests: write
+    needs:
+    - remove-deploy-labels
+    - add-deploy-labels
+    if: always() && contains(needs.*.result, 'success')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Delete release
-      run: |
-        echo "${{ needs.remove-deploy-labels.outputs.commentParams }}"
+    - uses: ./.github/actions/sim-jenkins
+      with:
+        pr-id: ${{ github.event.issue.number }}
+        deploy-label: ${{ needs.*.outputs.commentParams }}

@@ -1,4 +1,4 @@
-name: Run release
+name: Run jenkins
 
 on:
   pull_request:
@@ -24,7 +24,7 @@ jobs:
           }
           return deployLabels;
 
-  run-release:
+  run-jenkins:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
