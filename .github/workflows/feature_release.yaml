@@ -7,8 +7,7 @@ on:
 jobs:
   add-deploy-labels:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
+    permissions: write-all
     steps:
     - uses: actions/checkout@v3
     - uses: actions/github-script@v6
