@@ -15,8 +15,7 @@ jobs:
     - name: Parse comment
       run: |
         IFS=' ' read -r -a COMMENT_ARGS <<< "${{ github.event.comment.body }}"
-        echo "${COMMENT_ARGS[0]}"
-        echo "${COMMENT_ARGS[1]}"
+        echo "parsedComment={\"cluster\":\"${COMMENT_ARGS[0]}\", \"valuesPath\": \"${COMMENT_ARGS[1]}\"}" >> $GITHUB_OUTPUT
     - uses: actions/github-script@v6
       with:
         script: |
@@ -24,5 +23,8 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            labels: ["test"]
+            labels: [
+              "cluster:${{ steps.vars.outputs.parsedComment.cluster }}",
+              "valuesPath:${{ steps.vars.outputs.parsedComment.valuesPath }}"
+            ]
           })
