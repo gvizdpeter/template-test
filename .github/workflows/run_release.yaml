@@ -16,20 +16,13 @@ jobs:
       with:
         result-encoding: json
         script: |
-          console.log(context.payload.pull_request);
-          return ["test"];
-          /*const { data: labels } = await github.rest.issues.listLabelsOnIssue({
-            issue_number: context.event.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
           const deployLabels = []
-          for (const label of labels) {
-            if (label.name.startsWith("deploy)) {
+          for (const label of context.payload.pull_request.labels) {
+            if (label.name.startsWith("deploy:")) {
               deployLabels.push(label.name)
             }
           }
-          return deployLabels;*/
+          return deployLabels;
 
   run-release:
     runs-on: ubuntu-latest
