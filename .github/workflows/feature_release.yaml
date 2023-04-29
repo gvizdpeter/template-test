@@ -74,7 +74,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name : test echo
-      env : { CONTENT : "${{ toJson(needs.*.outputs) }}" }
+      env : { CONTENT : "${{ toJson(needs.*.outputs.commentParams) }}" }
       run : "echo $CONTENT"
     # - uses: ./.github/actions/sim-jenkins
     #   with:
