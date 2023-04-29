@@ -16,7 +16,7 @@ jobs:
       with:
         result-encoding: json
         script: |
-          console.log(context.event.number);
+          console.log(context);
           return ["test"];
           /*const { data: labels } = await github.rest.issues.listLabelsOnIssue({
             issue_number: context.event.number,
