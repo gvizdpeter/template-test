@@ -15,7 +15,7 @@ jobs:
     - uses: actions/github-script@v6
       with:
         script: |
-          const commentParams = "${{ github.event.comment.body }}".substring(1).replace(" ", ":");
+          const commentParams = "${{ github.event.comment.body }}".substring(1).replaceAll(" ", ":");
           github.rest.issues.addLabels({
             issue_number: context.issue.number,
             owner: context.repo.owner,
