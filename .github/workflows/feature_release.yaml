@@ -58,7 +58,7 @@ jobs:
             repo: context.repo.repo
           });
           console.log(labels)
-          /*const setLabels = []
+          const setLabels = []
           for (const label of labels) {
             if (!label.name.startsWith("deploy:" + commentParams[1])) {
               setLabels.push(label.name)
@@ -69,7 +69,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             labels: setLabels
-          });*/
+          });
           return commentParams;
 
   delete-release:
