@@ -1,0 +1,29 @@
+name: 'Sim run Jenkins'
+description: ""
+inputs:
+  pr-id:
+    description: ""
+    required: true
+  deploy-label:
+    description: ""
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        IFS=':' read -r -a labelParams <<< "${{ inputs.deploy-label }}"
+        echo "result={\"action\": \"$labelParams[0]\", \"cluster\": \"$labelParams[1]\"}" >> "$GITHUB_OUTPUT"
+      shell: bash
+      id: parse-deploy-params
+    - run: |
+        echo "Running ${{ steps.parse-deploy-params.outputs.result.action }} on ${{ steps.parse-deploy-params.outputs.result.cluster }}"
+      shell: bash
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: ${{ inputs.pr-id }},
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: "Successfull ${{ steps.parse-deploy-params.outputs.result.action }} on ${{ steps.parse-deploy-params.outputs.result.cluster }}"
+          })

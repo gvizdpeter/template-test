@@ -58,7 +58,7 @@ jobs:
             repo: context.repo.repo
           });
           console.log(labels)
-          const setLabels = []
+          let setLabels = []
           for (const label of labels) {
             if (!label.name.startsWith("deploy:" + commentParams[1])) {
               setLabels.push(label.name)

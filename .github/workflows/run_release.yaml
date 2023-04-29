@@ -16,7 +16,7 @@ jobs:
       with:
         result-encoding: json
         script: |
-          const deployLabels = []
+          let deployLabels = []
           for (const label of context.payload.pull_request.labels) {
             if (label.name.startsWith("deploy:")) {
               deployLabels.push(label.name)
@@ -31,6 +31,8 @@ jobs:
       matrix:
         deployLabel: ${{ fromJSON(needs.get-deploy-labels.outputs.deployLabels) }}
     steps:
-      - name: Release ${{ matrix.deployLabel }}
-        run: |
-          echo ${{ matrix.deployLabel }}
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/sim-jenkins
+        with:
+          pr-id: ${{ github.event.number }}
+          deploy-label: ${{ matrix.deployLabel }}
