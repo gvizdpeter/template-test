@@ -52,24 +52,24 @@ jobs:
         result-encoding: string
         script: |
           const commentParams = "${{ github.event.comment.body }}".split(' ');
-          const labels = await github.rest.issues.listLabelsOnIssue({
+          const { data: labels } = await github.rest.issues.listLabelsOnIssue({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo
           });
-          console.log(typeof labels)
-          const setLabels = []
-          for (const label of labels) {
-            if (!label.name.startsWith("deploy:" + commentParams[1])) {
-              setLabels.push(label.name)
-            }
-          }
-          github.rest.issues.setLabels({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            labels: setLabels
-          });
+          console.log(labels)
+          # const setLabels = []
+          # for (const label of labels) {
+          #   if (!label.name.startsWith("deploy:" + commentParams[1])) {
+          #     setLabels.push(label.name)
+          #   }
+          # }
+          # github.rest.issues.setLabels({
+          #   issue_number: context.issue.number,
+          #   owner: context.repo.owner,
+          #   repo: context.repo.repo,
+          #   labels: setLabels
+          # });
           return commentParams;
 
   delete-release:
