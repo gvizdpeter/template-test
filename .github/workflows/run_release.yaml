@@ -26,6 +26,8 @@ jobs:
 
   run-release:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     needs: get-deploy-labels
     strategy:
       matrix:
