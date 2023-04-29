@@ -6,7 +6,7 @@ on:
 
 jobs:
   add-deploy-labels:
-    if: ${{ github.event.issue.pull_request }} && startsWith(github.event.comment.body, '/deploy')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/deploy')
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
