@@ -1,8 +1,12 @@
 name: Run release
 
 on:
+  workflow_run:
+    workflows: ["Add deploy labels"]
+    types: [completed]
+
   pull_request:
-    types: [labeled, edited, synchronize]
+    types: [edited, synchronize]
 
 jobs:
   run-release:
