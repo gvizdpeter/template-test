@@ -16,10 +16,8 @@ jobs:
       with:
         result-encoding: json
         script: |
-          console.log(context.pull_request);
-          return ["test"];
-          /*const { data: labels } = await github.rest.issues.listLabelsOnIssue({
-            issue_number: context.event.number,
+          const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+            issue_number: context.payload.pull_request.number,
             owner: context.repo.owner,
             repo: context.repo.repo
           });
@@ -29,7 +27,7 @@ jobs:
               deployLabels.push(label.name)
             }
           }
-          return deployLabels;*/
+          return deployLabels;
 
   run-release:
     runs-on: ubuntu-latest
