@@ -12,8 +12,8 @@ runs:
   steps:
     - run: |
         IFS=':' read -r -a labelParams <<< "${{ inputs.deploy-label }}"
-        echo "action=$labelParams[0]" >> "$GITHUB_OUTPUT"
-        echo "cluster=$labelParams[1]" >> "$GITHUB_OUTPUT"
+        echo "action=${labelParams[0]}" >> "$GITHUB_OUTPUT"
+        echo "cluster=${labelParams[1]}" >> "$GITHUB_OUTPUT"
       shell: bash
       id: parse-deploy-params
     - run: |
