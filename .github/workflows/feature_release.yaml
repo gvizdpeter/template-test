@@ -21,7 +21,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             labels: [
-              "cluster:" + commentParams[0],
-              "valuesPath:" + commentParams[1]
+              "cluster:" + commentParams[1],
+              "valuesPath:" + commentParams[2]
             ]
           });
