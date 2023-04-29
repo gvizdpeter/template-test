@@ -25,7 +25,7 @@ jobs:
           return deployLabels;
 
   run-jenkins:
-    if: needs.get-deploy-labels.outputs.deployLabels
+    if: needs.get-deploy-labels.outputs.deployLabels != '[]'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
