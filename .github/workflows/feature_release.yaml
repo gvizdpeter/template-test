@@ -57,7 +57,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo
           });
-          const labels = await github.paginate(opts)
+          const labels = await github.request(opts)
           console.log(labels)
           const setLabels = []
           for (const label of labels) {
