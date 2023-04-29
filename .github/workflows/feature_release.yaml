@@ -73,7 +73,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: ./.github/actions/sim-jenkins
-      with:
-        pr-id: ${{ github.event.issue.number }}
-        deploy-label: ${{ needs.*.outputs.commentParams }}
+    - name : test echo
+      env : { CONTENT : "${{ toJson(needs.*.outputs) }}" }
+      run : "echo $CONTENT"
+    # - uses: ./.github/actions/sim-jenkins
+    #   with:
+    #     pr-id: ${{ github.event.issue.number }}
+    #     deploy-label: ${{ needs.*.outputs.commentParams }}
