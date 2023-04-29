@@ -52,12 +52,11 @@ jobs:
         result-encoding: string
         script: |
           const commentParams = "${{ github.event.comment.body }}".split(' ');
-          const opts = github.rest.issues.listLabelsOnIssue({
+          const labels = github.rest.issues.listLabelsOnIssue({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo
           });
-          const labels = await github.request(opts)
           console.log(labels)
           const setLabels = []
           for (const label of labels) {
