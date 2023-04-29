@@ -58,18 +58,18 @@ jobs:
             repo: context.repo.repo
           });
           console.log(labels)
-          # const setLabels = []
-          # for (const label of labels) {
-          #   if (!label.name.startsWith("deploy:" + commentParams[1])) {
-          #     setLabels.push(label.name)
-          #   }
-          # }
-          # github.rest.issues.setLabels({
-          #   issue_number: context.issue.number,
-          #   owner: context.repo.owner,
-          #   repo: context.repo.repo,
-          #   labels: setLabels
-          # });
+          /*const setLabels = []
+          for (const label of labels) {
+            if (!label.name.startsWith("deploy:" + commentParams[1])) {
+              setLabels.push(label.name)
+            }
+          }
+          github.rest.issues.setLabels({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: setLabels
+          });*/
           return commentParams;
 
   delete-release:
