@@ -52,11 +52,14 @@ jobs:
             return labels;
           }
           let setLabels = []
+          console.log(labels);
+          console.log(commentParams);
           for (const label of labels) {
             if (!label.startsWith("deploy:" + commentParams[1])) {
               setLabels.push(label.name)
             }
           }
+          console.log(setLabels);
           github.rest.issues.setLabels({
             issue_number: context.issue.number,
             owner: context.repo.owner,
