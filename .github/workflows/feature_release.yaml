@@ -9,7 +9,7 @@ jobs:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/deploy')
     runs-on: ubuntu-latest
     outputs:
-      commentParams: ${{ steps.add-deploy-labels.outputs.result }}
+      comment-params: ${{ steps.add-deploy-labels.outputs.result }}
     permissions:
       pull-requests: write
     steps:
@@ -17,7 +17,7 @@ jobs:
     - uses: actions/github-script@v6
       id: add-deploy-labels
       with:
-        result-encoding: string
+        result-encoding: json
         script: |
           const commentParams = "${{ github.event.comment.body }}".substring(1).replaceAll(" ", ":");
           github.rest.issues.addLabels({
@@ -26,13 +26,13 @@ jobs:
             repo: context.repo.repo,
             labels: [commentParams]
           });
-          return commentParams;
+          return [commentParams];
 
   remove-deploy-labels:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/delete')
     runs-on: ubuntu-latest
     outputs:
-      commentParams: ${{ steps.remove-deploy-labels.outputs.result }}
+      comment-params: ${{ steps.remove-deploy-labels.outputs.result }}
     permissions:
       pull-requests: write
     steps:
@@ -44,10 +44,10 @@ jobs:
     - uses: actions/github-script@v6
       id: remove-deploy-labels
       with:
-        result-encoding: string
+        result-encoding: json
         script: |
           const commentParams = "${{ github.event.comment.body }}".split(' ');
-          labels = ${{ steps.get-deploy-labels.outputs.deploy-labels }}
+          labels = JSON.parse(${{ toJSON(steps.get-deploy-labels.outputs.deploy-labels) }});
           let setLabels = []
           for (const label of labels) {
             if (!label.name.startsWith("deploy:" + commentParams[1])) {
@@ -60,7 +60,7 @@ jobs:
             repo: context.repo.repo,
             labels: setLabels
           });
-          return "${{ github.event.comment.body }}".substring(1).replaceAll(" ", ":");
+          return ["${{ github.event.comment.body }}".substring(1).replaceAll(" ", ":")];
 
   run-jenkins:
     permissions:
@@ -70,9 +70,12 @@ jobs:
     - remove-deploy-labels
     if: always() && contains(needs.*.result, 'success')
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deploy-label: ${{ contains(needs.add-deploy-labels.result, 'success') && needs.add-deploy-labels.outputs.comment-params || needs.remove-deploy-labels.outputs.comment-params }}
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/sim-jenkins
       with:
         pr-id: ${{ github.event.issue.number }}
-        deploy-label: ${{ contains(needs.add-deploy-labels.result, 'success') && needs.add-deploy-labels.outputs.commentParams || needs.remove-deploy-labels.outputs.commentParams }}
+        deploy-label: ${{ matrix.deploy-label }}
