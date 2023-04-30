@@ -1,0 +1,30 @@
+name: 'Get deploy labels'
+description: ""
+inputs:
+  pr-id:
+    description: ""
+    required: true
+outputs:
+  deploy-labels:
+    description: ""
+    value: ${{ steps.get-deploy-labels.outputs.result }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/github-script@v6
+      id: get-deploy-labels
+      with:
+        result-encoding: string
+        script: |
+          const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+            issue_number: ${{ inputs.pr-id }},
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          let deployLabels = []
+          for (const label of labels) {
+            if (label.name.startsWith("deploy:")) {
+              deployLabels.push(label.name)
+            }
+          }
+          return deployLabels;

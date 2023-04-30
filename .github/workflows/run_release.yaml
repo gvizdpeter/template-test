@@ -8,31 +8,23 @@ jobs:
   get-deploy-labels:
     runs-on: ubuntu-latest
     outputs:
-      deployLabels: ${{ steps.get-deploy-labels.outputs.result }}
+      deploy-labels: ${{ steps.get-deploy-labels.outputs.deploy-labels }}
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/github-script@v6
+    - uses: ./.github/actions/get-deploy-labels
       id: get-deploy-labels
       with:
-        result-encoding: json
-        script: |
-          let deployLabels = []
-          for (const label of context.payload.pull_request.labels) {
-            if (label.name.startsWith("deploy:")) {
-              deployLabels.push(label.name)
-            }
-          }
-          return deployLabels;
+        pr-id: ${{ github.event.number }}
 
   run-jenkins:
-    if: needs.get-deploy-labels.outputs.deployLabels != '[]'
+    if: needs.get-deploy-labels.outputs.deploy-labels != '[]'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     needs: get-deploy-labels
     strategy:
       matrix:
-        deployLabel: ${{ fromJSON(needs.get-deploy-labels.outputs.deployLabels) }}
+        deployLabel: ${{ fromJSON(needs.get-deploy-labels.outputs.deploy-labels) }}
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/sim-jenkins

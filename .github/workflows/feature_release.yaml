@@ -37,18 +37,17 @@ jobs:
       pull-requests: write
     steps:
     - uses: actions/checkout@v3
+    - uses: ./.github/actions/get-deploy-labels
+      id: get-deploy-labels
+      with:
+        pr-id: ${{ github.event.issue.number }}
     - uses: actions/github-script@v6
       id: remove-deploy-labels
       with:
         result-encoding: string
         script: |
           const commentParams = "${{ github.event.comment.body }}".split(' ');
-          const { data: labels } = await github.rest.issues.listLabelsOnIssue({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
-          console.log(labels)
+          labels = ${{ steps.get-deploy-labels.outputs.deploy-labels }}
           let setLabels = []
           for (const label of labels) {
             if (!label.name.startsWith("deploy:" + commentParams[1])) {
