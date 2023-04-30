@@ -49,8 +49,8 @@ jobs:
           const commentParams = "${{ github.event.comment.body }}".split(' ');
           const labels = JSON.parse(${{ toJSON(steps.get-deploy-labels.outputs.deploy-labels) }});
           let setLabels = []
-          for (label in labels) {
-            if (!label.name.startsWith("deploy:" + commentParams[1])) {
+          for (const label of labels) {
+            if (!label.startsWith("deploy:" + commentParams[1])) {
               setLabels.push(label.name)
             }
           }
