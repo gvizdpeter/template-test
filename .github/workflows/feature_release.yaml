@@ -47,11 +47,10 @@ jobs:
         result-encoding: json
         script: |
           const labels = JSON.parse(${{ toJSON(steps.get-deploy-labels.outputs.deploy-labels) }});
-          if ("${{ github.event.comment.body }}" == "/delete all") {
+          const commentParams = "${{ github.event.comment.body }}".split(' ');
+          if (commentParams[1] == "all") {
             return labels;
           }
-          const commentParams = "${{ github.event.comment.body }}".split(' ');
-
           let setLabels = []
           for (const label of labels) {
             if (!label.startsWith("deploy:" + commentParams[1])) {
