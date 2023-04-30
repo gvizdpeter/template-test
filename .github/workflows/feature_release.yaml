@@ -49,9 +49,16 @@ jobs:
           const labels = JSON.parse(${{ toJSON(steps.get-deploy-labels.outputs.deploy-labels) }});
           const commentParams = "${{ github.event.comment.body }}".split(' ');
           let setLabels = [];
-          for (const label of labels) {
-            if (commentParams[1] != "all" && !label.startsWith("deploy:" + commentParams[1])) {
-              setLabels.push(label)
+          let deleteLabels = []
+          if (commentParams[1] == "all") {
+            deleteLabels = labels;
+          } else {
+            for (const label of labels) {
+              if (label.startsWith("deploy:" + commentParams[1])) {
+                deleteLabels.push(label);
+              } else {
+                setLabels.push(label);
+              }
             }
           }
           github.rest.issues.setLabels({
@@ -60,7 +67,7 @@ jobs:
             repo: context.repo.repo,
             labels: setLabels
           });
-          return commentParams[1] == "all" ? labels.map(l => l.replace("deploy", "delete").replace(/:[^:]+$/, "")) : ["${{ github.event.comment.body }}".substring(1).replaceAll(" ", ":")];
+          return deleteLabels.map(l => l.replace("deploy", "delete").replace(/:[^:]+$/, ""));
 
   run-jenkins:
     permissions:
