@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deploy-label: ${{ contains(needs.add-deploy-labels.result, 'success') && needs.add-deploy-labels.outputs.comment-params || needs.remove-deploy-labels.outputs.comment-params }}
+        deploy-label: ${{ fromJSON(contains(needs.add-deploy-labels.result, 'success') && needs.add-deploy-labels.outputs.comment-params || needs.remove-deploy-labels.outputs.comment-params) }}
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/sim-jenkins
