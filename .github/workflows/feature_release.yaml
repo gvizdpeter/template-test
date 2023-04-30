@@ -28,12 +28,11 @@ jobs:
           const cluster = commentParams.split(":")[1];
           let setLabels = [];
           for (label in labels) {
-            if (label.startsWith("deploy:" + cluster)) {
-              setLabels.push(commentParams);
-            } else {
+            if (!label.startsWith("deploy:" + cluster)) {
               setLabels.push(label);
             }
           }
+          setLabels.push(commentParams);
           github.rest.issues.setLabels({
             issue_number: context.issue.number,
             owner: context.repo.owner,
