@@ -14,17 +14,31 @@ jobs:
       pull-requests: write
     steps:
     - uses: actions/checkout@v3
+    - uses: ./.github/actions/get-deploy-labels
+      id: get-deploy-labels
+      with:
+        pr-id: ${{ github.event.issue.number }}
     - uses: actions/github-script@v6
       id: add-deploy-labels
       with:
         result-encoding: json
         script: |
+          const labels = JSON.parse(${{ toJSON(steps.get-deploy-labels.outputs.deploy-labels) }});
           const commentParams = "${{ github.event.comment.body }}".substring(1).replaceAll(" ", ":");
-          github.rest.issues.addLabels({
+          const cluster = commentParams.split(":")[1];
+          let setLabels = [];
+          for (label in labels) {
+            if (label.startsWith("deploy:" + cluster)) {
+              setLabels.push(commentParams);
+            } else {
+              setLabels.push(label);
+            }
+          }
+          github.rest.issues.setLabels({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            labels: [commentParams]
+            labels: setLabels
           });
           return [commentParams];
 
@@ -49,7 +63,7 @@ jobs:
           const labels = JSON.parse(${{ toJSON(steps.get-deploy-labels.outputs.deploy-labels) }});
           const commentParams = "${{ github.event.comment.body }}".split(' ');
           let setLabels = [];
-          let deleteLabels = []
+          let deleteLabels = [];
           if (commentParams[1] == "all") {
             deleteLabels = labels;
           } else {
