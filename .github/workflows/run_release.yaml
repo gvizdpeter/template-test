@@ -24,10 +24,10 @@ jobs:
     needs: get-deploy-labels
     strategy:
       matrix:
-        deployLabel: ${{ fromJSON(needs.get-deploy-labels.outputs.deploy-labels) }}
+        deploy-label: ${{ fromJSON(needs.get-deploy-labels.outputs.deploy-labels) }}
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/sim-jenkins
         with:
           pr-id: ${{ github.event.number }}
-          deploy-label: ${{ matrix.deployLabel }}
+          deploy-label: ${{ matrix.deploy-label }}

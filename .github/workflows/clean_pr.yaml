@@ -1,0 +1,49 @@
+name: Clean deployments
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  clean-deploy-labels:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy-labels: ${{ steps.remove-deploy-labels.outputs.result }}
+    permissions:
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/actions/get-deploy-labels
+      id: get-deploy-labels
+      with:
+        pr-id: ${{ github.event.number }}
+    - uses: actions/github-script@v6
+      id: remove-deploy-labels
+      with:
+        result-encoding: json
+        script: |
+          const labels = JSON.parse(${{ toJSON(steps.get-deploy-labels.outputs.deploy-labels) }});
+          github.rest.issues.setLabels({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: []
+          });
+          return labels.map(l => l.replace("deploy", "delete").replace(/:[^:]+$/, ""));
+
+  run-jenkins:
+    permissions:
+      pull-requests: write
+    needs:
+    - clean-deploy-labels
+    if: needs.clean-deploy-labels.outputs.deploy-labels != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deploy-label: ${{ fromJSON(needs.get-deploy-labels.outputs.deploy-labels) }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/actions/sim-jenkins
+      with:
+        pr-id: ${{ github.event.number }}
+        deploy-label: ${{ matrix.deploy-label }}
