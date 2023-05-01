@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deploy-label: ${{ fromJSON(needs.get-deploy-labels.outputs.deploy-labels) }}
+        deploy-label: ${{ fromJSON(needs.clean-deploy-labels.outputs.deploy-labels) }}
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/sim-jenkins
