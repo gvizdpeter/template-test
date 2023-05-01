@@ -27,7 +27,7 @@ jobs:
           const commentParams = "${{ github.event.comment.body }}".substring(1).replaceAll(" ", ":");
           const cluster = commentParams.split(":")[1];
           let setLabels = [];
-          for (label in labels) {
+          for (const label of labels) {
             if (!label.startsWith("deploy:" + cluster)) {
               setLabels.push(label);
             }
