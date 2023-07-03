@@ -1,0 +1,33 @@
+---
+# Manual workflow, that manages settings for all DBAP repositories:
+# * branch protection
+# * repository settings
+# * Github action permissions
+name: Manage Git Settings
+
+on:
+  workflow_dispatch:
+    inputs:
+      GHE:
+        type: boolean
+        default: false
+        required: false
+
+jobs:
+  manage-git-settings:
+    runs-on: sentinel-general-use-runner
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: "Manage Git Settings"
+        uses: "actions/github-script@v6"
+        env:
+          GHE: ${{ inputs.GHE }}
+        with:
+          # We need to use personal access token with repo access
+          # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+          github-token: "${{ secrets.INIT_TOKEN }}"
+          script: |
+            const script = require('./.github/workflows/scripts/manage-git-settings.js');
+            await script({github, context, core})
