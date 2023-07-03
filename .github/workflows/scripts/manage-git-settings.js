@@ -2,14 +2,12 @@ const { repos } = require("./repositories.js");
 const { mandatory_checks, optional_checks } = require("./checks.js");
 
 module.exports = async ({github, context, core}) => {
-    for (repo of repos) {
-        const { GHE } = process.env
-        console.log(GHE);
-        if (!GHE) {
-            console.log("here");
-        } else {
-            console.log("there");
-        }
+    const { GHE } = process.env
+    console.log(typeof GHE);
+    if (!GHE) {
+        console.log("here");
+    } else {
+        console.log("there");
     }
 }
 
