@@ -5,6 +5,11 @@ module.exports = async ({github, context, core}) => {
     for (repo of repos) {
         const { GHE } = process.env
         console.log(GHE);
+        if (!GHE) {
+            console.log("here");
+        } else {
+            console.log("there");
+        }
     }
 }
 
