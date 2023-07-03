@@ -4,7 +4,7 @@ const { mandatory_checks, optional_checks } = require("./checks.js");
 module.exports = async ({github, context, core}) => {
     const { GHE } = process.env
     console.log(typeof GHE);
-    if (!GHE) {
+    if (GHE == "false") {
         console.log("here");
     } else {
         console.log("there");
